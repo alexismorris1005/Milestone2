@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Search</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="bookshelf.html">My Bookshelf</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h1>Search Books</h1>
+        <input type="text" id="searchTerm" placeholder="Enter search terms">
+        <button id="searchButton">Search</button>
+        <div id="results"></div>
+        <div id="pagination"></div>
+    </main>
+    <script>
+        $(document).ready(function() {
+            // Book Search
+            $('#searchButton').click(function() {
+                const searchTerm = $('#searchTerm').val();
+                const url = `https://www.googleapis.com/books/v1/volumes?q=${searchTerm}`;
+
+                $.getJSON(url, function(data) {
+                    let output = '';
+                    $.each(data.items, function(index, book) {
+                        output += `
+                            <div class="book">
+                                <img src="${book.volumeInfo.imageLinks?.thumbnail}" alt="Book cover">
+                                <h2><a href="details.html?id=${book.id}">${book.volumeInfo.title}</a></h2>
+                            </div>
+                        `;
+                    });
+                    $('#results').html(output);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookshelf</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="bookshelf.html">My Bookshelf</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h1>My Bookshelf</h1>
+        <div id="bookshelf"></div>
+    </main>
+    <script>
+        $(document).ready(function() {
+            if (window.location.pathname.endsWith('bookshelf.html')) {
+                const userId = '110701146409825149492';
+                const shelfId = '1001';
+                const url = `https://www.googleapis.com/books/v1/users/${userId}/bookshelves/${shelfId}/volumes?key=AIzaSyAT5sGuu2wDdRWOfsxENzyTde0sQiNqOeo`;
+
+
+                $.getJSON(url, function(data) {
+                    let output = '';
+                    if (data.items) {
+                        $.each(data.items, function(index, book) {
+                            output += `
+                                <div class="book">
+                                    <img src="${book.volumeInfo.imageLinks?.thumbnail}" alt="Book cover">
+                                    <h2><a href="details.html?id=${book.id}">${book.volumeInfo.title}</a></h2>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        output = '<p>No books found in this shelf.</p>';
+                    }
+                    $('#bookshelf').html(output);
+                }).fail(function() {
+                    $('#bookshelf').html('<p>Failed to load bookshelf. Please check your API key and shelf ID.</p>');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

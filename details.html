@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Details</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="bookshelf.html">My Bookshelf</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h1>Book Details</h1>
+        <div id="bookDetails"></div>
+    </main>
+    <script>
+        $(document).ready(function() {
+            if (window.location.pathname.endsWith('details.html')) {
+                const urlParams = new URLSearchParams(window.location.search);
+                const bookId = urlParams.get('id');
+                const url = `https://www.googleapis.com/books/v1/volumes/${bookId}`;
+
+                $.getJSON(url, function(book) {
+                    let output = `
+                        <h2>${book.volumeInfo.title}</h2>
+                        <img src="${book.volumeInfo.imageLinks?.thumbnail}" alt="Book cover">
+                        <p>${book.volumeInfo.description}</p>
+                        <p><strong>Authors:</strong> ${book.volumeInfo.authors?.join(', ')}</p>
+                        <p><strong>Publisher:</strong> ${book.volumeInfo.publisher}</p>
+                        <p><strong>Published Date:</strong> ${book.volumeInfo.publishedDate}</p>
+                    `;
+                    $('#bookDetails').html(output);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
